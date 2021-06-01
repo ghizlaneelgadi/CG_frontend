@@ -28,6 +28,12 @@
   color: #61dafb;
 }
 
+a.active {
+  background-color: firebrick;
+  color:Black ;
+  font-weight:bold;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
