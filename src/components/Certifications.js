@@ -3,7 +3,10 @@ import { Card, Table, InputGroup, FormControl, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStepBackward, faFastBackward, faStepForward, faFastForward } from '@fortawesome/free-solid-svg-icons';
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+toast.configure()
 
 export default class Certifications extends Component {
 	
@@ -12,7 +15,7 @@ export default class Certifications extends Component {
 		this.state = {
 			certif : [],
 			currentPage : 1,
-			certifsPerPage: 3
+			certifsPerPage: 5
 		};
 		
 	}
@@ -68,6 +71,10 @@ export default class Certifications extends Component {
 		}	
 	
 	};
+
+	notify = () => {
+		toast("Certification with the id +" {this.id_Cert} '+ will expire in +' {this.time_left} "+ days")
+	}
 	
 	
 	
@@ -108,14 +115,13 @@ export default class Certifications extends Component {
 								</tr> :
 								
 								currentCertifs.map((certif) => (
-									<tr key={certif.Id_Cert}>
-										<td>{certif.Id_Cert}</td>
+									<tr key={certif.id_Cert}>
+										<td>{certif.id_Cert}</td>
 										<td>{certif.state}</td>
 										<td>{certif.exp_Date}</td>
-										<td style ={{color: certif.time_left <= 30 ? "red" : "green", fontWeight: certif.time_left <= 30 ? "bold" : "lighter"}}>{certif.time_left}j</td>
+										<td style ={{color: certif.time_left <= 30 ? "red" : "green", fontWeight: certif.time_left <= 30 ? "bold" : "lighter"}}>{certif.time_left} j</td>
 									</tr>
-								))
-								
+								))	
 							}
 						</tbody>
 					</Table>
