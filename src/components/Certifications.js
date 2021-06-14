@@ -146,6 +146,7 @@ export default class Certifications extends Component {
 									</tr>
 								))
 							}
+							
 						</tbody>
 					</Table>
 				</Card.Body>
