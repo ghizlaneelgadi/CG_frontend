@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Card, Form, Button, Col } from 'react-bootstrap';
 import {Link} from 'react-router-dom';
+import '../App.css';
+
 
 export default class SearchForm extends Component {
 
@@ -8,19 +10,12 @@ export default class SearchForm extends Component {
 		super(props);
 		this.state = this.initialState;
 		this.FlowChange = this.FlowChange.bind(this);
-		this.SearchFlow = this.SearchFlow.bind(this);
+		this.cancelSearch = this.cancelSearch.bind(this);
 	}
 	
 	initialState = {
 		startdate: '', enddate: '', flowidentifier: '', flowname: '', sourceapp: '', targetapp: '' 	
 	}
-
-
-	SearchFlow(event) {
-		alert('start date: ' +this.state.startdate+', end date: '+this.state.enddate+' flow identifier: '+this.state.flowidentifier);
-		event.preventDefault();
-	}
-
 
 	FlowChange(event) {
 		this.setState({
@@ -32,16 +27,32 @@ export default class SearchForm extends Component {
 	}
 
 
+	cancelSearch = () => {
+		this.setState({"senddate": ""});
+		this.setState({"enddate": ""});
+		this.setState({"flowidentifier": ""});
+		this.setState({"flowname": ""});
+		this.setState({"sourceapp": ""});
+		this.setState({"targetapp": ""});
+	};
+
+	handleSearch = () =>{
+		localStorage.setItem('senddate', this.state.startdate);
+		localStorage.setItem('enddate', this.state.enddate);
+		localStorage.setItem('flowidentifier', this.state.flowidentifier);
+		localStorage.setItem('flowname', this.state.flowname);
+		localStorage.setItem('sourceapp', this.state.sourceapp);
+		localStorage.setItem('targetapp', this.state.targetapp);
+	}
 
 	render() {
 		
 		const {startdate, enddate,flowidentifier, flowname, sourceapp, targetapp} = this.state
 		
-		
-		
 		return (
 
-			<Card className="border border-white text-black text-black align-self-center align-middle" style = {{ width: '80%', marginLeft : 'auto', marginRight : 'auto'}} >
+			<Card className="border border-white text-black text-black align-self-center align-middle" 
+				style = {{ width: '80%', marginLeft : 'auto', marginRight : 'auto'}} >
 				<br />
 				<Card.Header lg={12} className="text-center texte-muted">Enter your parameters</Card.Header>
 				<Form onSubmit={this.SearchFlow} id="flowFormId">
@@ -55,7 +66,7 @@ export default class SearchForm extends Component {
 									name="startdate"
 									value={startdate}
 									onChange={this.FlowChange}
-									placeholder="Start date" />
+									placeholderText="Start date" />
 							</Form.Group>
 
 							<Form.Group as={Col} controlId="formGridEnddate">
@@ -113,10 +124,18 @@ export default class SearchForm extends Component {
 					</Card.Body>
 					<Card.Footer style={{ "textAlign": "right" }}>
 					<Link to="/flows">
-						<Button size="mm" variant="danger" type="submit">
+						<Button size="mm" variant="danger" type="submit"
+							onClick = {this.handleSearch}>
 							Search
 						</Button>
-					</Link>
+						</Link>
+					
+						<Button size="mm" variant="danger" type="submit" 
+						onClick = {this.cancelSearch} 
+						style={{ "marginLeft": "10px" }}>
+							Cancel
+					</Button>
+					
 					</Card.Footer>
 				</Form>
 			</Card>

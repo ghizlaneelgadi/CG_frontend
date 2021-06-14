@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import { CSVLink } from "react-csv";
 import axios from "axios";
 
+
 export default class FlowDashboard extends Component {
 
 	constructor(props) {
@@ -13,21 +14,27 @@ export default class FlowDashboard extends Component {
 		this.state = {
 			current: [],
 			currentPage: 1,
-			flowsPerPage: 3
+			flowsPerPage: 5
 		};
 		this.csvLinkEl = React.createRef();
-
-
 	}
-
 
 	componentDidMount() {
 		this.findFlows();
+		var time_send = new Date(localStorage.getItem('senddate'));
+		var time_rec= new Date(localStorage.getItem('enddate'));
+		localStorage.getItem('flowidentifier');
+		localStorage.getItem('flowname');
+		localStorage.getItem('sourceapp');
+		localStorage.getItem('targetapp');
+		console.log(time_send);
+		console.log(time_rec);
+
 	}
 
 
 	findFlows() {
-		axios.get("http://localhost:8080/Current")
+		axios.get("http://localhost:8080/api/flows/flow?flowidentifier="+localStorage.getItem('flowidentifier')+"&flowname="+localStorage.getItem('flowname')+"&sourceapp="+localStorage.getItem('sourceapp')+"&targetapp="+localStorage.getItem('targetapp')+"&senddate="+localStorage.getItem('senddate')+"&enddate="+localStorage.getItem('enddate'))
 			.then(response => response.data)
 			.then((data) =>
 				this.setState({ current: data }));
@@ -92,8 +99,6 @@ export default class FlowDashboard extends Component {
 		});
 	};
 
-
-
 	refreshPage = () => {
 		window.location.reload(false);
 	}
@@ -117,9 +122,7 @@ export default class FlowDashboard extends Component {
 
 		const headers = [
 			{ label: "Start date", key: "senddate" },
-			{label: "Start time", key: "sendtime" },
 			{ label: "End date", key: "enddate" },
-			{ label: "End time", key: "endtime" },
 			{ label: "Flow identifier", key: "flowidentifier" },
 			{ label: "Flow name", key: "flowname" },
 			{ label: "Priority", key: "priority" },
@@ -130,12 +133,11 @@ export default class FlowDashboard extends Component {
 			{ label: "Filename", key: "filename" },
 		];
 
-
-
+		
 		return (
 
-			<Card className="border border-white " style={{width: '100%', marginLeft: '0'}}>
-				<Card.Header  className="text-center texte-muted" >
+			<Card className="border border-white " style={{ width: '100%', marginLeft: '0' }}>
+				<Card.Header className="text-center texte-muted" >
 					<div style={{ "textAlign": "right" }}>
 						<Button variant="outline-info" className="border">
 							< img src="https://image.flaticon.com/icons/png/128/617/617502.png" width="25" height="25"
@@ -159,10 +161,10 @@ export default class FlowDashboard extends Component {
 								<th>End date</th>
 								<th>Flow identifier</th>
 								<th>Flow name</th>
-								<th>Priority</th>
+								<th>Source application</th>
+								<th>Target application</th>
 								<th>Status</th>
 								<th>Protocol</th>
-								
 							</tr>
 						</thead>
 						<tbody>
@@ -170,17 +172,18 @@ export default class FlowDashboard extends Component {
 								<tr>
 									<td colSpan="10"> Flows</td>
 								</tr> :
-
 								currentflow.map((current) => (
 									<tr key={current.Id}>
-										<td>{current.senddate} {current.sendtime} </td>
-										<td>{current.enddate} {current.endtime}</td>
+										<td>{current.senddate} </td>
+										<td>{current.enddate} </td>
 										<td>{current.flowidentifier}</td>
 										<td>{current.flowname}</td>
-										<td>{current.priority}</td>
-										<td style ={{color: current.status === "Canceled" ? "red" : "green", fontWeight: current.status === 'Canceled' ? "bold" : "lighter"}}>{current.status}</td>
+										<td>{current.sourceapp}</td>
+										<td>{current.targetapp}</td>
+										<td style={{ color: current.status === "Canceled" ? "red" : "green", 
+											fontWeight: current.status === 'Canceled' ? "bold" : "lighter" }}>{current.status}</td>
 										<td>{current.protocol}</td>
-										
+
 									</tr>
 								))
 
