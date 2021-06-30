@@ -5,7 +5,8 @@ import { faStepBackward, faFastBackward, faStepForward, faFastForward } from '@f
 import axios from "axios";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-
+import AuthService from "../services/auth.service";
+import { Redirect } from "react-router-dom";
 
 
 toast.configure();
@@ -17,6 +18,8 @@ export default class Certifications extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			redirect: null,
+			userReady: false,
 			certif: [],
 			currentPage: 1,
 			certifsPerPage: 6
@@ -27,10 +30,17 @@ export default class Certifications extends Component {
 
 
 	componentDidMount() {
-		this.findAllCertif();
-		this.showAlert();
+		document.body.style.backgroundColor = "#f9f9f9"
+		const currentUser = AuthService.getCurrentUser();
+
+		if (!currentUser) this.setState({ redirect: "/home" });
+		this.setState({ currentUser: currentUser, userReady: true })
+
+		if(this.state.userReady) {
+			this.findAllCertif();
+			this.showAlert();
+		}
 		table += localStorage.getItem('val');
-		console.log(table);
 	}
 
 	findAllCertif() {
@@ -84,9 +94,9 @@ export default class Certifications extends Component {
 		var name = localStorage.getItem('id_Cert');
 		var exp = localStorage.getItem('exp_Date');
 		var days_left = this.convertDate(exp);
-		toast.error("Alert ! the certificate with the id " + name + " will expire in " + days_left + " days" , { autoClose: 1000 }, 
-		{position: toast.POSITION.TOP_RIGHT});
-		
+		toast.error("Alert ! the certificate with the id " + name + " will expire in " + days_left + " days", { autoClose: 10000 },
+			{ position: toast.POSITION.TOP_RIGHT });
+
 	};
 
 
@@ -97,9 +107,15 @@ export default class Certifications extends Component {
 		var diff_in_days = (diff_in_time / (1000 * 3600 * 24)).toFixed(0);
 		return diff_in_days;
 	}
-	
+
 
 	render() {
+		if (this.state.redirect) {
+			return <Redirect to={this.state.redirect} />
+		}
+
+		const { currentUser } = this.state;
+
 		const { certif, currentPage, certifsPerPage } = this.state;
 		const lastIndex = currentPage * certifsPerPage;
 		const firstIndex = lastIndex - certifsPerPage;
@@ -113,75 +129,78 @@ export default class Certifications extends Component {
 			textAlign: "center",
 			fontWeight: "bold"
 		}
+
 		return (
-			<Card className="border border-white text-black" style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
-				<Card.Header lg={12} className="text-center texte-muted"></Card.Header>
-				<Card.Body>
-					<Table id="table" hover size="sm" responsive border >
-						<thead>
-							<tr>
-								<th>ID</th>
-								<th>Certification state</th>
-								<th>Exp. date</th>
-								<th>Time left</th>
-							</tr>
-						</thead>
-
-						<tbody>
-							{certif.length === 0 ?
-								<tr>
-									<td colSpan="10"> Flows</td>
-								</tr> :
-								currentCertifs.map((certif) => (
-									<tr key={certif.id_Cert}>
-										{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('exp_Date', certif.exp_Date): null}
-										{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('id_Cert', certif.id_Cert) : null}
-										{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('val', this.convertDate(certif.exp_Date)) : null}
-										<td>{certif.id_Cert} </td>
-										<td>{certif.state}</td>
-										<td>{certif.exp_Date}</td>
-										<td style={{ color: this.convertDate(certif.exp_Date) <= 30 ? "red" : "green", fontWeight:this.convertDate(certif.exp_Date) <= 30 ? "bold" : "lighter" }}>
-											{this.convertDate(certif.exp_Date)} d
-										</td>
+			<div className="container">
+				{(this.state.userReady) ?
+					<Card className="border border-white text-black" style={{ width: '60%', marginLeft: 'auto', marginRight: 'auto', marginTop: '30px' }} >
+						<Card.Header lg={12} className="text-center texte-muted"></Card.Header>
+						<Card.Body>
+							<Table id="table" hover size="sm" responsive border >
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Certification state</th>
+										<th>Exp. date</th>
+										<th>Time left</th>
 									</tr>
-								))
-							}
-							
-						</tbody>
-					</Table>
-				</Card.Body>
-				<Card.Footer>
-					<div style={{ "float": "right" }}>
-						<InputGroup size="sm">
-							<InputGroup.Prepend>
-								<Button type="button" variant="outline-info" disabled={currentPage === 1 ? true : false}
-									onClick={this.firstPage}>
-									< FontAwesomeIcon icon={faFastBackward} /> First
-								</Button>
-								<Button type="button" variant="outline-info" disabled={currentPage === 1 ? true : false}
-									onClick={this.prevPage}>
-									< FontAwesomeIcon icon={faStepBackward} /> Prev
-								</Button>
-							</InputGroup.Prepend>
+								</thead>
 
-							<FormControl style={pageNumCss} name="currentPage" value={currentPage}
-								onChange={this.changePage} />
+								<tbody>
+									{certif.length === 0 ?
+										<tr>
+											<td colSpan="10"> Flows</td>
+										</tr> :
+										currentCertifs.map((certif) => (
+											<tr key={certif.id_Cert}>
+												{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('exp_Date', certif.exp_Date) : null}
+												{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('id_Cert', certif.id_Cert) : null}
+												{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('val', this.convertDate(certif.exp_Date)) : null}
+												<td>{certif.id_Cert} </td>
+												<td>{certif.state}</td>
+												<td>{certif.exp_Date}</td>
+												<td style={{ color: this.convertDate(certif.exp_Date) <= 30 ? "red" : "green", fontWeight: this.convertDate(certif.exp_Date) <= 30 ? "bold" : "lighter" }}>
+													{this.convertDate(certif.exp_Date)} day(s)
+												</td>
+											</tr>
+										))
+									}
 
-							<InputGroup.Prepend>
-								<Button type="button" variant="outline-info" disabled={currentPage === totalPages ? true : false}
-									onClick={this.nextPage}>
-									< FontAwesomeIcon icon={faStepForward} /> Next
-								</Button>
-								<Button type="button" variant="outline-info" disabled={currentPage === totalPages ? true : false}
-									onClick={this.lastPage}>
-									< FontAwesomeIcon icon={faFastForward} /> Last
-								</Button>
-							</InputGroup.Prepend>
-						</InputGroup>
-					</div>
-				</Card.Footer>
-			</Card>
+								</tbody>
+							</Table>
+						</Card.Body>
+						<Card.Footer>
+							<div style={{ "float": "right" }}>
+								<InputGroup size="sm">
+									<InputGroup.Prepend>
+										<Button type="button" variant="outline-info" disabled={currentPage === 1 ? true : false}
+											onClick={this.firstPage}>
+											< FontAwesomeIcon icon={faFastBackward} /> First
+										</Button>
+										<Button type="button" variant="outline-info" disabled={currentPage === 1 ? true : false}
+											onClick={this.prevPage}>
+											< FontAwesomeIcon icon={faStepBackward} /> Prev
+										</Button>
+									</InputGroup.Prepend>
 
+									<FormControl style={pageNumCss} name="currentPage" value={currentPage}
+										onChange={this.changePage} />
+
+									<InputGroup.Prepend>
+										<Button type="button" variant="outline-info" disabled={currentPage === totalPages ? true : false}
+											onClick={this.nextPage}>
+											< FontAwesomeIcon icon={faStepForward} /> Next
+										</Button>
+										<Button type="button" variant="outline-info" disabled={currentPage === totalPages ? true : false}
+											onClick={this.lastPage}>
+											< FontAwesomeIcon icon={faFastForward} /> Last
+										</Button>
+									</InputGroup.Prepend>
+								</InputGroup>
+							</div>
+						</Card.Footer>
+					</Card> : null}
+			</div>
 		);
 	}
 

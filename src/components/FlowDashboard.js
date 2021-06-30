@@ -34,7 +34,7 @@ export default class FlowDashboard extends Component {
 
 
 	findFlows() {
-		axios.get("http://localhost:8080/api/flows/flow?flowidentifier="+localStorage.getItem('flowidentifier')+"&flowname="+localStorage.getItem('flowname')+"&sourceapp="+localStorage.getItem('sourceapp')+"&targetapp="+localStorage.getItem('targetapp')+"&senddate="+localStorage.getItem('senddate')+"&enddate="+localStorage.getItem('enddate'))
+		axios.get("http://localhost:8080/api/flows/flow?flowidentifier="+localStorage.getItem('flowidentifier')+"&flowname="+localStorage.getItem('flowname')+"&sourceapp="+localStorage.getItem('sourceapp')+"&targetapp="+localStorage.getItem('targetapp'))
 			.then(response => response.data)
 			.then((data) =>
 				this.setState({ current: data }));
@@ -136,7 +136,7 @@ export default class FlowDashboard extends Component {
 		
 		return (
 
-			<Card className="border border-white " style={{ width: '100%', marginLeft: '0' }}>
+			<Card className="border border-white " style={{ width: '80%', marginLeft: 'auto' , marginRight: 'auto' , marginTop: '30px' }}>
 				<Card.Header className="text-center texte-muted" >
 					<div style={{ "textAlign": "right" }}>
 						<Button variant="outline-info" className="border">

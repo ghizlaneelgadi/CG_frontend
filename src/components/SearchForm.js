@@ -12,6 +12,10 @@ export default class SearchForm extends Component {
 		this.FlowChange = this.FlowChange.bind(this);
 		this.cancelSearch = this.cancelSearch.bind(this);
 	}
+
+	componentDidMount(){
+		document.body.style.backgroundColor = "#f9f9f9"
+	  }
 	
 	initialState = {
 		startdate: '', enddate: '', flowidentifier: '', flowname: '', sourceapp: '', targetapp: '' 	
@@ -52,7 +56,7 @@ export default class SearchForm extends Component {
 		return (
 
 			<Card className="border border-white text-black text-black align-self-center align-middle" 
-				style = {{ width: '80%', marginLeft : 'auto', marginRight : 'auto'}} >
+			style={{ width: '60%', marginLeft: 'auto' , marginRight: 'auto' , marginTop: '30px' }} >
 				<br />
 				<Card.Header lg={12} className="text-center texte-muted">Enter your parameters</Card.Header>
 				<Form onSubmit={this.SearchFlow} id="flowFormId">
