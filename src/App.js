@@ -110,7 +110,6 @@ class App extends Component {
 			</Switch>
 		
 			
-			<Footer />
 		</Router>
 		</div>
 		</div>
@@ -120,28 +119,5 @@ class App extends Component {
   }
   
   export default App;
-	/*return (
-		{ <Router>
-			
-			<Container>
-				<Row>
-					<Col lg={12} style={marginTop}>
-						<Switch>
-							<Route path="/" exact component = {Authentication}/>
-							<NavigationBar />
-							<Route path="/certif" exact component = {Certifications}/>
-							<Route path="/flows" exact component = {FlowDashboard}/>
-						</Switch>
-					</Col>
-				</Row>
-			
-			</Container>
-		
-			
-			<Footer />
-		</Router> }
-			
-		
-	);*/
-
+	
 

@@ -140,7 +140,7 @@ export default class Certifications extends Component {
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Certification state</th>
+										<th> state</th>
 										<th>Exp. date</th>
 										<th>Time left</th>
 									</tr>
@@ -151,7 +151,7 @@ export default class Certifications extends Component {
 										<tr>
 											<td colSpan="10"> Flows</td>
 										</tr> :
-										currentCertifs.map((certif) => (
+										currentCertifs.map((certif) =>  (
 											<tr key={certif.id_Cert}>
 												{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('exp_Date', certif.exp_Date) : null}
 												{this.convertDate(certif.exp_Date) <= 30 ? localStorage.setItem('id_Cert', certif.id_Cert) : null}
@@ -161,11 +161,11 @@ export default class Certifications extends Component {
 												<td>{certif.exp_Date}</td>
 												<td style={{ color: this.convertDate(certif.exp_Date) <= 30 ? "red" : "green", fontWeight: this.convertDate(certif.exp_Date) <= 30 ? "bold" : "lighter" }}>
 													{this.convertDate(certif.exp_Date)} day(s)
-												</td>
+												</td> 
 											</tr>
-										))
-									}
-
+											
+											))
+										}
 								</tbody>
 							</Table>
 						</Card.Body>

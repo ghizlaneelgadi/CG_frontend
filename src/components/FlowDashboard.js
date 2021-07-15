@@ -136,7 +136,7 @@ export default class FlowDashboard extends Component {
 		
 		return (
 
-			<Card className="border border-white " style={{ width: '80%', marginLeft: 'auto' , marginRight: 'auto' , marginTop: '30px' }}>
+			<Card className="border border-white " style={{ width: '70%', marginLeft: 'auto' , marginRight: 'auto' , marginTop: '30px' }}>
 				<Card.Header className="text-center texte-muted" >
 					<div style={{ "textAlign": "right" }}>
 						<Button variant="outline-info" className="border">
@@ -157,14 +157,12 @@ export default class FlowDashboard extends Component {
 					<Table id="table" hover size="sm" responsive border>
 						<thead>
 							<tr>
-								<th>Start date</th>
-								<th>End date</th>
-								<th>Flow identifier</th>
-								<th>Flow name</th>
-								<th>Source application</th>
-								<th>Target application</th>
-								<th>Status</th>
-								<th>Protocol</th>
+								<th style = {{textAlign: "center"}}>Start date</th>
+								<th style = {{textAlign: "center"}}>End date</th>
+								<th style = {{textAlign: "center"}}>Source application</th>
+								<th style = {{textAlign: "center"}}>Target application</th>
+								<th style = {{textAlign: "center"}}>Status</th>
+								<th style = {{textAlign: "center"}}>Protocol</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -187,7 +185,8 @@ export default class FlowDashboard extends Component {
 									</tr>
 								))
 
-							}
+							} 
+							
 						</tbody>
 					</Table>
 				</Card.Body>
