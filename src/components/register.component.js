@@ -4,6 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { Card, Button, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { isEmail } from "validator";
 
 import AuthService from "../services/auth.service";
 
@@ -17,6 +18,15 @@ const required = value => {
   }
 };
 
+const vemail = value => {
+  if (!isEmail(value)) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        This is not a valid email.
+      </div>
+    );
+  }
+};
 
 const vusername = value => {
   if (value.length < 3 || value.length > 20) {
@@ -44,17 +54,19 @@ export default class Register extends Component {
     this.handleRegister = this.handleRegister.bind(this);
     this.onChangeUsername = this.onChangeUsername.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
+    this.onChangeEmail = this.onChangeEmail.bind(this);
 
     this.state = {
       username: "",
       password: "",
+      mail: "",
       successful: false,
       message: ""
     };
   }
 
   componentDidMount(){
-    document.body.style.backgroundColor = "#f9f9f9"
+    document.body.style.backgroundColor = "#f9f9f9";
   }
 
   onChangeUsername(e) {
@@ -65,7 +77,7 @@ export default class Register extends Component {
 
   onChangeEmail(e) {
     this.setState({
-      email: e.target.value
+      mail: e.target.value
     });
   }
 
@@ -88,7 +100,8 @@ export default class Register extends Component {
     if (this.checkBtn.context._errors.length === 0) {
       AuthService.register(
         this.state.username,
-        this.state.password
+        this.state.password,
+        this.state.mail,
       ).then(
         response => {
           this.setState({
@@ -103,7 +116,6 @@ export default class Register extends Component {
               error.response.data.message) ||
             error.message ||
             error.toString();
-
           this.setState({
             successful: false,
             message: resMessage
@@ -152,6 +164,19 @@ export default class Register extends Component {
                     value={this.state.password}
                     onChange={this.onChangePassword}
                     validations={[required, vpassword]}
+                  />
+                </div>
+
+                <div className="form-group" as={Col} style={{ width: '80%', marginLeft: 'auto', marginRight: 'auto' }}>
+                  <label htmlFor="mail"></label>
+                  <Input autocomplete="off"
+                    type="text"
+                    className="form-control"
+                    name="mail"
+                    placeholder="Mail"
+                    value={this.state.email}
+                    onChange={this.onChangeEmail}
+                    validations={[required, vemail]}
                   />
                 </div>
                 <br />

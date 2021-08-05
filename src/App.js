@@ -8,7 +8,7 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 
 import NavigationBar from './components/NavigationBar';
 import Footer from './components/Footer';
-import Certifications from './components/Certifications';
+import Certification from './components/certifs.component';
 import BoardAdmin  from './components/board-admin.component';
 import FlowDashboard from './components/FlowDashboard';
 import SearchForm from './components/SearchForm';
@@ -16,6 +16,7 @@ import BoardUser  from './components/board-user.component';
 import Login from './components/login.component';
 import Profile from './components/profile.component';
 import Register from './components/register.component';
+import UsersList from './components/users_list';
 import { render } from '@testing-library/react';
 import AuthService from "./services/auth.service";
 
@@ -66,6 +67,7 @@ class App extends Component {
 						{showAdminBoard ? (
 							<Nav className="mr-auto" >
 								<NavLink to={"/register"} className="nav-link " >Add user</NavLink>
+								<NavLink to={"/listusers"} className="nav-link " >Users</NavLink>
 							</Nav>
 						): null}
 
@@ -100,16 +102,15 @@ class App extends Component {
 			
 			<Switch>
 			<Route exact path={["/","/login"]}  component={Login} />
-			  <Route exact path="/certif"  component={Certifications} />
+			  <Route exact path="/certif"  component={Certification} />
 			  <Route exact path="/search"  component={SearchForm} />
 			  <Route exact path="/register"  component={Register} />
+			  <Route exact path="/listusers"  component={UsersList} />
 			  <Route path="/user"  component={BoardUser} />
 			  <Route path="/admin"  component={BoardAdmin} />
 			  <Route path="/flows" exact component = {FlowDashboard}/>
 			  <Route exact path="/profile"  component={Profile} />
 			</Switch>
-		
-			
 		</Router>
 		</div>
 		</div>
