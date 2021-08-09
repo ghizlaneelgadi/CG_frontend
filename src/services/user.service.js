@@ -31,9 +31,7 @@ class UserService {
     return axios.put(API_Users_List + '/' +username, user);
   }
 
-  deleteUser(id){
-    return axios.delete('http://localhost:8080/api/userslist/delete/' + id, { headers: authHeader() })
-  }
+  
 }
 
 export default new UserService();

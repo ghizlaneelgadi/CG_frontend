@@ -5,6 +5,10 @@ import { faStepBackward, faFastBackward, faStepForward, faFastForward, fa } from
 import jsPDF from "jspdf";
 import { CSVLink } from "react-csv";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
+import AuthService from "../services/auth.service";
+import authHeader from '../services/auth-header';
+
 
 
 export default class FlowDashboard extends Component {
@@ -12,6 +16,8 @@ export default class FlowDashboard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+            redirect: null,
+            userReady: false,
 			current: [],
 			currentPage: 1,
 			flowsPerPage: 5
@@ -29,12 +35,17 @@ export default class FlowDashboard extends Component {
 		localStorage.getItem('targetapp');
 		console.log(time_send);
 		console.log(time_rec);
+		const currentUser = AuthService.getCurrentUser();
+        document.body.style.backgroundColor = "#f9f9f9";
+
+        if (!currentUser) this.setState({ redirect: "/home" });
+        this.setState({ currentUser: currentUser, userReady: true })
 
 	}
 
 
 	findFlows() {
-		axios.get("http://localhost:8080/api/flows/flow?flowidentifier="+localStorage.getItem('flowidentifier')+"&flowname="+localStorage.getItem('flowname')+"&sourceapp="+localStorage.getItem('sourceapp')+"&targetapp="+localStorage.getItem('targetapp'))
+		axios.get("http://localhost:8080/api/flows/flow?flowidentifier="+localStorage.getItem('flowidentifier')+"&flowname="+localStorage.getItem('flowname')+"&sourceapp="+localStorage.getItem('sourceapp')+"&targetapp="+localStorage.getItem('targetapp'), { headers: authHeader() })
 			.then(response => response.data)
 			.then((data) =>
 				this.setState({ current: data }));
@@ -133,10 +144,16 @@ export default class FlowDashboard extends Component {
 			{ label: "Filename", key: "filename" },
 		];
 
+		if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
+        }
+
 		
 		return (
 
-			<Card className="border border-white " style={{ width: '70%', marginLeft: 'auto' , marginRight: 'auto' , marginTop: '30px' }}>
+			<div className="container">
+				{(this.state.userReady) ?
+				<Card className="border border-white " style={{ width: '100%', marginLeft: 'auto' , marginRight: 'auto' , marginTop: '30px' }}>
 				<Card.Header className="text-center texte-muted" >
 					<div style={{ "textAlign": "right" }}>
 						<Button variant="outline-info" className="border">
@@ -159,6 +176,8 @@ export default class FlowDashboard extends Component {
 							<tr>
 								<th style = {{textAlign: "center"}}>Start date</th>
 								<th style = {{textAlign: "center"}}>End date</th>
+								<th style = {{textAlign: "center"}}>Identifier</th>
+								<th style = {{textAlign: "center"}}>Flowname</th>
 								<th style = {{textAlign: "center"}}>Source application</th>
 								<th style = {{textAlign: "center"}}>Target application</th>
 								<th style = {{textAlign: "center"}}>Status</th>
@@ -172,15 +191,15 @@ export default class FlowDashboard extends Component {
 								</tr> :
 								currentflow.map((current) => (
 									<tr key={current.Id}>
-										<td>{current.senddate} </td>
-										<td>{current.enddate} </td>
-										<td>{current.flowidentifier}</td>
-										<td>{current.flowname}</td>
-										<td>{current.sourceapp}</td>
-										<td>{current.targetapp}</td>
-										<td style={{ color: current.status === "Canceled" ? "red" : "green", 
-											fontWeight: current.status === 'Canceled' ? "bold" : "lighter" }}>{current.status}</td>
-										<td>{current.protocol}</td>
+										<td style = {{textAlign: "center"}}>{current.senddate} </td>
+										<td style = {{textAlign: "center"}}>{current.enddate} </td>
+										<td style = {{textAlign: "center"}}>{current.flowidentifier}</td>
+										<td style = {{textAlign: "center"}}>{current.flowname}</td>
+										<td style = {{textAlign: "center"}}>{current.sourceapp}</td>
+										<td style = {{textAlign: "center"}}>{current.targetapp}</td>
+										<td style={{ textAlign: "center", color: current.status === "Canceled" ? "red" : "green", 
+											fontWeight: current.status === 'Canceled' ? "bold" : "bold", textAlign: "center" }}>{current.status}</td>
+										<td style = {{textAlign: "center"}}>{current.protocol}</td>
 
 									</tr>
 								))
@@ -222,7 +241,10 @@ export default class FlowDashboard extends Component {
 						</InputGroup>
 					</div>
 				</Card.Footer>
-			</Card>
+			</Card> : null}
+			</div>
+
+			
 
 		);
 	}

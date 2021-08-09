@@ -99,10 +99,7 @@ export default class UsersList extends Component {
                 }
             })
         }
-        
     }
-
-
 
     modalOpen() {
         this.setState({ modal: true });
