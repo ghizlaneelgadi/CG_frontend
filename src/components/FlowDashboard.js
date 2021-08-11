@@ -45,7 +45,7 @@ export default class FlowDashboard extends Component {
 
 
 	findFlows() {
-		axios.get("http://localhost:8080/api/flows/flow?flowidentifier="+localStorage.getItem('flowidentifier')+"&flowname="+localStorage.getItem('flowname')+"&sourceapp="+localStorage.getItem('sourceapp')+"&targetapp="+localStorage.getItem('targetapp'), { headers: authHeader() })
+		axios.get("http://localhost:8080/api/flows/flow?flowidentifier="+localStorage.getItem('flowidentifier')+"&flowname="+localStorage.getItem('flowname')+"&sourceapp="+localStorage.getItem('sourceapp')+"&targetapp="+localStorage.getItem('targetapp')+localStorage.getItem('enddate'), { headers: authHeader() })
 			.then(response => response.data)
 			.then((data) =>
 				this.setState({ current: data }));
@@ -191,8 +191,8 @@ export default class FlowDashboard extends Component {
 								</tr> :
 								currentflow.map((current) => (
 									<tr key={current.Id}>
-										<td style = {{textAlign: "center"}}>{current.senddate} </td>
-										<td style = {{textAlign: "center"}}>{current.enddate} </td>
+										<td style = {{textAlign: "center"}}>{new Date(current.senddate).toDateString()} {current.sendtime} </td>
+										<td style = {{textAlign: "center"}}>{new Date(current.enddate).toDateString()} {current.endtime} </td>
 										<td style = {{textAlign: "center"}}>{current.flowidentifier}</td>
 										<td style = {{textAlign: "center"}}>{current.flowname}</td>
 										<td style = {{textAlign: "center"}}>{current.sourceapp}</td>
